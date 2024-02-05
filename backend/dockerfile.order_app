@@ -1,0 +1,14 @@
+FROM golang:1.19-alpine AS builder
+
+WORKDIR /app
+COPY . .
+RUN go build -o order-app cmd/order-app/main.go
+ENTRYPOINT ./order-app
+
+FROM alpine
+WORKDIR /app
+# need to copy data and .env
+COPY --from=builder /app/order-app .
+COPY --from=builder /app/.env .
+ENTRYPOINT ["/app/order-app"]
+
