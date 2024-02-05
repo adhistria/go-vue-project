@@ -38,7 +38,6 @@ func (o OrderRepository) Search(ctx context.Context, option entity.Option) ([]*e
 	SUM(oi.price_per_unit * oi.quantity) AS total_price,
 	COALESCE(SUM(oi.price_per_unit * d.delivered_quantity), 0) AS total_delivered_price`
 	query := o.baseQuery(columns, option) + paginationParams + ";"
-	// fmt.Println(query)
 	err := o.sqlClient.Select(&result, query)
 	if err != nil {
 		return nil, err
@@ -50,7 +49,6 @@ func (o OrderRepository) GetTotal(option entity.Option) (*entity.OrderSummary, e
 	query := fmt.Sprintf("SELECT SUM(total) as total_rows, SUM(total_price) as total_amount FROM (%v ", o.baseQuery("COUNT(DISTINCT (o.id)) as total, SUM(oi.price_per_unit * oi.quantity) AS total_price", option)) + ");"
 	result := entity.OrderSummary{}
 	err := o.sqlClient.Get(&result, query)
-	fmt.Println(query)
 	if err != nil {
 		return nil, err
 	}
@@ -61,9 +59,6 @@ func (o OrderRepository) baseQuery(columns string, option entity.Option) string 
 	whereArr := []string{}
 	whereParams := ""
 
-	australiaTimeZone := "Australia/Sydney"
-	fmt.Println(australiaTimeZone, option.EndDate)
-
 	if option.Search != "" {
 		whereArr = append(whereArr, fmt.Sprintf("oi.product ILIKE '%v'", "%"+option.Search+"%"))
 		whereArr = append(whereArr, fmt.Sprintf("o.order_name ILIKE '%v'", "%"+option.Search+"%"))
@@ -72,7 +67,6 @@ func (o OrderRepository) baseQuery(columns string, option entity.Option) string 
 	}
 
 	emptyTime := time.Time{}
-	fmt.Println(emptyTime, "empty time")
 	whereTimeArr := []string{}
 	if option.StartDate != emptyTime {
 		whereTimeArr = append(whereTimeArr, fmt.Sprintf("o.created_at >= '%v'", option.StartDate.Format("2006-01-02")))

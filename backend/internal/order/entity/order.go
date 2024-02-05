@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -26,8 +25,6 @@ func ConvertDateToString(orders []Order) {
 
 func (o *Order) ConvertDateToString() {
 	o.CreatedAt = o.CreatedAtTime.Format("Jan 2nd, 3:04 PM")
-	fmt.Println("convert date")
-	fmt.Println(o.CreatedAt)
 }
 
 type Option struct {
