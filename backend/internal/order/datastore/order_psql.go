@@ -46,7 +46,7 @@ func (o OrderRepository) Search(ctx context.Context, option entity.Option) ([]*e
 }
 
 func (o OrderRepository) GetTotal(option entity.Option) (*entity.OrderSummary, error) {
-	query := fmt.Sprintf("SELECT SUM(total) as total_rows, SUM(total_price) as total_amount FROM (%v ", o.baseQuery("COUNT(DISTINCT (o.id)) as total, SUM(oi.price_per_unit * oi.quantity) AS total_price", option)) + ");"
+	query := fmt.Sprintf("SELECT COALESCE(SUM(total), 0) as total_rows, COALESCE(SUM(total_price), 0) as total_amount FROM (%v ", o.baseQuery("COUNT(DISTINCT (o.id)) as total, SUM(oi.price_per_unit * oi.quantity) AS total_price", option)) + ");"
 	result := entity.OrderSummary{}
 	err := o.sqlClient.Get(&result, query)
 	if err != nil {
