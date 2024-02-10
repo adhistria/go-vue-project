@@ -1,0 +1,62 @@
+version: "3.8"
+services:
+  app:
+    build: backend
+    container_name: database-initializer
+    environment:
+      - DB_DRIVER=postgres
+      - DB_URL=postgres://user:pass@postgres_container_order/packform?sslmode=disable
+    depends_on:
+      - postgres
+    networks:
+      - order-app
+  backend:
+    build:
+      context: backend
+      dockerfile: dockerfile.order_app
+    container_name: backend-order
+    environment:
+      - DB_DRIVER=postgres
+      - DB_URL=postgres://user:pass@postgres_container_order/packform?sslmode=disable
+    ports:
+      - '8080:8080'
+    depends_on:
+      - database-initializer
+      - postgres
+    networks:
+      - order-app
+  frontend:
+    build:
+      context: frontend/order-app
+      dockerfile: dockerfile
+    container_name: frontend-order
+    environment:
+      - DB_DRIVER=postgres
+      - DB_URL=postgres://user:pass@postgres_container_order/packform?sslmode=disable
+    ports:
+      - '8081:80'
+    depends_on:
+      - database-initializer
+      - backend
+      - postgres
+    networks:
+      - order-app
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres_container_order
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=packform
+    ports:
+      - '5432:5432'
+    networks:
+      - order-app
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+
+volumes:
+    postgres_db:
+networks:
+  order-app:
+    driver: bridge

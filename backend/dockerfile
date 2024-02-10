@@ -7,7 +7,7 @@ ENTRYPOINT ./database-initializer
 
 FROM alpine
 WORKDIR /app
-# need to copy data and .env
+
 COPY --from=builder /app .
 ENTRYPOINT ["/app/database-initializer"]
 
