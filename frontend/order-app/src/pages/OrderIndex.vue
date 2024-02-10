@@ -14,9 +14,6 @@
           aria-controls="my-table"
         ></b-pagination>
     </b-row>
-
-  
-
   </div>
 </template>
 
@@ -50,7 +47,7 @@ export default {
   },
   methods: {
     fetchData() {
-      let base_url = "http://localhost:8080/orders" 
+      let base_url = "http://localhost:8083/orders" 
       axios.get(base_url, {params: {search: this.search, page: this.currentPage, start_date: this.startDate, end_date: this.endDate}})
         .then(response => {
           this.items = response.data.data;

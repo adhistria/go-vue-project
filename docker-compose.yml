@@ -19,7 +19,7 @@ services:
       - DB_DRIVER=postgres
       - DB_URL=postgres://user:pass@postgres_container_order/packform?sslmode=disable
     ports:
-      - '8080:8080'
+      - '8083:8080'
     depends_on:
       - database-initializer
       - postgres
@@ -34,7 +34,7 @@ services:
       - DB_DRIVER=postgres
       - DB_URL=postgres://user:pass@postgres_container_order/packform?sslmode=disable
     ports:
-      - '8081:80'
+      - '8084:80'
     depends_on:
       - database-initializer
       - backend
@@ -49,7 +49,7 @@ services:
       - POSTGRES_PASSWORD=pass
       - POSTGRES_DB=packform
     ports:
-      - '5432:5432'
+      - '5434:5432'
     networks:
       - order-app
     volumes:
